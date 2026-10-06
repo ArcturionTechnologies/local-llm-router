@@ -1,0 +1,8 @@
+{
+  "files": ["~/notes/inbox.md"],
+  "dirs": ["~/notes/approvals/"],
+  "commands": [{ "name": "queue_size", "cmd": "wc -l < ~/notes/queue.md" }],
+  "sanity_fire_hours": 6,
+  "skip_when_hot": true,
+  "log_path": "~/.config/local-llm-router/state/heartbeat/inbox.log"
+}

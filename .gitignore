@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local state and secrets -- never commit
+.env
+.env.*
+*.log
+*.jsonl
+*.db
+*.sqlite*
+config.local.*
+state/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

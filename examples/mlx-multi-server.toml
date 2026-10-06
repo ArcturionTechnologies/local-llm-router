@@ -1,0 +1,40 @@
+# Several mlx_lm.server processes, one model each, on different ports.
+# Only one *heavy* model should be resident at a time, so the 30B MoE tier is
+# `exclusive` (the router holds the model lock around each call) and `heavy`
+# is blocked by the thermal gate whenever the Mac is merely "busy".
+#
+#   mlx_lm.server --model mlx-community/Qwen3-4B-Instruct-2507-4bit --port 8770 &
+#   mlx_lm.server --model mlx-community/Qwen3-8B-4bit               --port 8765 &
+#   mlx_lm.server --model mlx-community/Qwen3-14B-4bit              --port 8766 &
+#
+# These are the built-in defaults; this file only shows the knobs you are
+# most likely to change.
+
+[tiers.fast]
+base_url = "http://127.0.0.1:8770/v1"
+model = "mlx-community/Qwen3-4B-Instruct-2507-4bit"
+thermal = "light"                  # only a red host blocks the 4B model
+timeout = 8.0
+fallbacks = ["small", "groq"]
+
+[tiers.medium]
+base_url = "http://127.0.0.1:8766/v1"
+model = "mlx-community/Qwen3-14B-4bit"
+thermal = "medium"                 # yellow host => step down to `small` instead
+fallbacks = ["small", "groq"]
+
+[tiers.heavy]
+enabled = true
+base_url = "http://127.0.0.1:8768/v1"
+model = "mlx-community/Qwen3-30B-A3B-Instruct-2507-4bit"
+thermal = "heavy"
+exclusive = true                   # one heavy model at a time, across processes
+demote_on_pressure = true          # also step down when free RAM < thermal.min_free_gb_heavy
+timeout = 90.0
+fallbacks = ["medium", "groq"]
+
+[thermal]
+min_free_gb_heavy = 22.0
+# Treat a running coding-agent session as memory pressure for the heavy tier:
+pressure_process_pattern = "claude|codex"
+pressure_ignore = ["config_guard", "logs-trim"]

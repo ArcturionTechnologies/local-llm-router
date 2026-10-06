@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-llm-router"
+version = "0.1.0"
+description = "Local-first LLM router for Apple Silicon: on-device MLX / OpenAI-compatible tiers first, escalation to bigger tiers, thermal gating, model lock, rate guard and budget tracking."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Robert Lingoes" }]
+keywords = ["llm", "router", "mlx", "apple-silicon", "lm-studio", "local-first", "thermal"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX",
+]
+dependencies = []          # standard library only
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[project.scripts]
+llm-router = "local_llm_router.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["local_llm_router*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

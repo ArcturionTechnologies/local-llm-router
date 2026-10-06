@@ -1,0 +1,40 @@
+# One LM Studio server (Developer tab -> Start Server, default port 1234)
+# serving whichever model you have loaded. Every role points at it; if it is
+# hot, busy or down, calls escalate to the free cloud tiers (needs GROQ_API_KEY etc.).
+#
+#   export LLM_ROUTER_CONFIG=examples/lmstudio.toml
+#   llm-router chat "Say hi in five words"
+
+[tiers.lmstudio]
+base_url = "http://127.0.0.1:1234/v1"
+model = "qwen3-8b"                 # the identifier LM Studio shows for the loaded model
+thermal = "standard"               # gate: red blocks it, unreadable sensors block it
+timeout = 60.0
+fallbacks = ["groq", "cerebras", "gemini"]
+
+[roles]
+fast = "lmstudio"
+helper = "lmstudio"
+small = "lmstudio"
+medium = "lmstudio"
+coder = "lmstudio"
+heavy = "lmstudio"
+vision = "lmstudio"
+
+[complexity_tiers]
+trivial = "lmstudio"
+routine = "lmstudio"               # hard -> sonnet and critical -> opus keep their cloud defaults
+
+# The six built-in local tiers point at ports nothing listens on in this setup.
+[tiers.fast]
+enabled = false
+[tiers.small]
+enabled = false
+[tiers.medium]
+enabled = false
+[tiers.coder]
+enabled = false
+[tiers.heavy]
+enabled = false
+[tiers.vision]
+enabled = false
